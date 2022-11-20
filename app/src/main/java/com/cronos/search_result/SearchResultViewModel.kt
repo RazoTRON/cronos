@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cronos.common.ScreenState
 import com.cronos.util.SearchInstance
 import com.example.domain.common.Resource
 import com.example.domain.search.model.People
@@ -19,7 +20,7 @@ class SearchResultViewModel @Inject constructor(
     private val findPeoplesUseCase: FindPeoplesUseCase,
 ) : ViewModel() {
     val list = mutableStateListOf<People>()
-    var state by mutableStateOf(SearchResultScreenState())
+    var state by mutableStateOf(ScreenState())
 
     fun findPeople() {
         val startId = list.lastOrNull()?.id ?: ""
@@ -52,7 +53,3 @@ class SearchResultViewModel @Inject constructor(
     }
 }
 
-data class SearchResultScreenState(
-    val isLoading: Boolean = false,
-    val error: Resource.Error<Unit>? = null,
-)

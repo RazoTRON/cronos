@@ -1,8 +1,11 @@
 package com.example.data.di
 
+import com.example.domain.auth.AuthRepository
+import com.example.domain.auth.use_case.AuthenticateUseCase
+import com.example.domain.auth.use_case.SignInUseCase
+import com.example.domain.auth.use_case.SignUpUseCase
 import com.example.domain.search.repository.CronosRepository
 import com.example.domain.search.use_case.*
-import com.example.domain.use_case.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +40,17 @@ class DomainModule {
     @Provides
     fun provideGetStatusUseCase(repository: CronosRepository): GetStatusUseCase {
         return GetStatusUseCase(repository)
+    }
+    @Provides
+    fun provideSignUpUseCase(repository: AuthRepository): SignUpUseCase {
+        return SignUpUseCase(repository)
+    }
+    @Provides
+    fun provideSignInUseCase(repository: AuthRepository): SignInUseCase {
+        return SignInUseCase(repository)
+    }
+    @Provides
+    fun provideAuthenticateUseCase(repository: AuthRepository): AuthenticateUseCase {
+        return AuthenticateUseCase(repository)
     }
 }

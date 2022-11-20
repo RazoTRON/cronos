@@ -34,28 +34,23 @@ fun LoginScreen(navController: NavHostController) {
         Settings.Secure.ANDROID_ID
     )
 
-    Log.e("ROUTE", navController.backQueue.joinToString { it.destination.route ?: it.id })
+//    Log.e("ROUTE", navController.backQueue.joinToString { it.destination.route ?: it.id })
 
     LaunchedEffect(true) {
         vm.handleStatus()
-        vm.send(AuthUiEvent.Authenticate)
-        vm.authResult.collect {
-            when (it) {
-                is AuthResult.Authorized -> {
-                    navController.navigate(CronosScreens.Search.name) {
-                        popUpTo(CronosScreens.Login.name) {
-                            inclusive = true
-                        }
-                    }
-                }
-                is AuthResult.Unauthorized -> {
-                    Toast.makeText(context, "You're not authorized.", Toast.LENGTH_LONG).show()
-                }
-                is AuthResult.Error -> {
-                    Toast.makeText(context, "Unknown error", Toast.LENGTH_LONG).show()
-                }
+        vm.authenticate()
+    }
+
+    if (vm.authorized) {
+        navController.navigate(CronosScreens.Search.name) {
+            popUpTo(CronosScreens.Login.name) {
+                inclusive = true
             }
         }
+    }
+
+    if (vm.screenState.error != null) {
+        Toast.makeText(context, vm.screenState.error?.message ?: "Unknown error", Toast.LENGTH_LONG).show()
     }
 
     Surface {
@@ -74,24 +69,24 @@ fun LoginScreen(navController: NavHostController) {
                 Text(text = "Device ID: $androidId")
                 Text(text = "Enter your login and password_")
                 StandardTextField(
-                    vm.authState.username,
+                    vm.username,
                     placeholder = "Login",
-                    onValueChange = { vm.send(AuthUiEvent.UsernameChanged(it)) })
+                    onValueChange = { vm.setUsernameField(it) })
                 StandardTextField(
-                    vm.authState.password,
+                    vm.password,
                     placeholder = "Password",
-                    onValueChange = { vm.send(AuthUiEvent.PasswordChanged(it)) })
+                    onValueChange = { vm.setPasswordField(it) })
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         Button(onClick = {
-                            vm.send(AuthUiEvent.SignIn)
+                            vm.signIn()
 //                            /*TODO*/
                         }) {
                             Text(text = "> LOGIN", color = MaterialTheme.colors.onPrimary)
                         }
-                        if (vm.statusState) {
-                            Button(enabled = vm.statusState, onClick = {
-                                vm.send(AuthUiEvent.SignUp)
+                        if (vm.register) {
+                            Button(enabled = vm.register, onClick = {
+                                vm.signUp()
 //                            /*TODO*/
                             }) {
                                 Text(text = "> REGISTER", color = MaterialTheme.colors.onPrimary)

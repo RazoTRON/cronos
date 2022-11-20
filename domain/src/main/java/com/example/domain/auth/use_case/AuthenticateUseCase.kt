@@ -11,21 +11,17 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
 
-class SignUpUseCase(private val repository: AuthRepository) {
+class AuthenticateUseCase(private val repository: AuthRepository) {
     suspend fun invoke(authRequest: AuthRequest): Flow<Resource<AuthResponse>> = flow {
         try {
             emit(Resource.Loading())
-            val response = repository.signUp(authRequest)
-            emit(Resource.Success(response))
+            val response = repository.authenticate()
+            emit(Resource.Success(AuthResponse(accessToken = "", refreshToken = "", userId = ""))) // TODO
         } catch (e: HttpException) {
             when (e.code()) {
                 401 -> emit(Resource.Error(
                     code = 401,
                     message = "You are not authorized."
-                ))
-                409 -> emit(Resource.Error(
-                    code = 409,
-                    message = "A user with this username already exists."
                 ))
                 else -> emit(
                     Resource.Error(

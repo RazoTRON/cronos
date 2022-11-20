@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.cronos.common.ScreenState
 import com.cronos.search_result.component.ResultCard
 import com.cronos.ui.theme.CronosTheme
 import com.cronos.util.CronosScreens
@@ -23,7 +24,7 @@ import com.example.domain.search.model.People
 @Composable
 fun SearchResultRoute(
     navController: NavHostController,
-    searchResultScreenState: SearchResultScreenState,
+    screenState: ScreenState,
     list: SnapshotStateList<People>,
     findPeople: (() -> Unit),
 ) {
@@ -57,8 +58,8 @@ fun SearchResultRoute(
 //    }
 
     Surface {
-        if (searchResultScreenState.error != null) {
-            ErrorMessage(text = searchResultScreenState.error?.message.orEmpty())
+        if (screenState.error != null) {
+            ErrorMessage(text = screenState.error?.message.orEmpty())
         }
         LazyColumn(
             modifier = Modifier
@@ -76,7 +77,7 @@ fun SearchResultRoute(
                     }
                 }
             }
-            if (searchResultScreenState.isLoading) {
+            if (screenState.isLoading) {
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -97,7 +98,7 @@ fun SearchResultScreen(navController: NavHostController) {
 
     SearchResultRoute(
         navController = navController,
-        searchResultScreenState = vm.state,
+        screenState = vm.state,
         list = vm.list,
         findPeople = vm::findPeople
     )
@@ -116,7 +117,7 @@ fun SearchResultScreenPreview() {
     CronosTheme {
         SearchResultRoute(
             rememberNavController(),
-            searchResultScreenState = SearchResultScreenState(),
+            screenState = ScreenState(),
             list = mutableStateListOf(
                 People(
                     id = "1",

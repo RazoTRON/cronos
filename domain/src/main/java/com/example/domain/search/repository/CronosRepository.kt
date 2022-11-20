@@ -1,7 +1,5 @@
 package com.example.domain.search.repository
 
-import com.example.domain.model.*
-import com.example.domain.model.request.*
 import com.example.domain.search.model.*
 import com.example.domain.search.model.request.*
 
