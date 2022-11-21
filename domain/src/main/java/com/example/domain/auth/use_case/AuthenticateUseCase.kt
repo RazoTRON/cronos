@@ -4,6 +4,7 @@ import com.example.domain.auth.AuthRepository
 import com.example.domain.auth.AuthRequest
 import com.example.domain.auth.AuthResponse
 import com.example.domain.auth.AuthResult
+import com.example.domain.common.ApiResponse
 import com.example.domain.common.Resource
 import com.example.domain.search.model.People
 import kotlinx.coroutines.flow.Flow
@@ -12,11 +13,11 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class AuthenticateUseCase(private val repository: AuthRepository) {
-    suspend fun invoke(authRequest: AuthRequest): Flow<Resource<AuthResponse>> = flow {
+    suspend fun invoke(): Flow<Resource<Unit>> = flow {
         try {
             emit(Resource.Loading())
             val response = repository.authenticate()
-            emit(Resource.Success(AuthResponse(accessToken = "", refreshToken = "", userId = ""))) // TODO
+            emit(Resource.Success(response))
         } catch (e: HttpException) {
             when (e.code()) {
                 401 -> emit(Resource.Error(

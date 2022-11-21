@@ -30,7 +30,7 @@ fun AppNavigation(navController: NavHostController) {
         ) {
             val peopleId = it.arguments?.getString("arg") ?: ""
             val people = SearchInstance.getList().getPeopleById(peopleId)
-            PeopleDetailsScreen(people = people, navController = navController)
+            PeopleDetailsScreen(people = people)
         }
     }
 

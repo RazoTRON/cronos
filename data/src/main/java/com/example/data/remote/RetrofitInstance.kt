@@ -4,10 +4,14 @@ import android.content.SharedPreferences
 import com.example.data.util.ACCESS_TOKEN
 import com.example.data.util.BASE_URL
 import com.example.data.util.REFRESH_TOKEN
+import com.example.domain.common.ApiResponse
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

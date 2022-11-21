@@ -4,6 +4,7 @@ import com.example.domain.auth.AuthRepository
 import com.example.domain.auth.AuthRequest
 import com.example.domain.auth.AuthResponse
 import com.example.domain.auth.AuthResult
+import com.example.domain.common.ApiResponse
 import com.example.domain.common.Resource
 import com.example.domain.search.model.People
 import kotlinx.coroutines.flow.Flow
@@ -12,26 +13,32 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class SignInUseCase(private val repository: AuthRepository) {
-    suspend fun invoke(authRequest: AuthRequest): Flow<Resource<AuthResponse>> = flow {
+    suspend fun invoke(authRequest: AuthRequest): Flow<Resource<ApiResponse<AuthResponse>>> = flow {
+        lateinit var response: ApiResponse<AuthResponse>
         try {
             emit(Resource.Loading())
-            val response = repository.signIn(authRequest)
+            response = repository.signIn(authRequest)
             emit(Resource.Success(response))
         } catch (e: HttpException) {
             when (e.code()) {
-                401 -> emit(Resource.Error(
-                    code = 401,
-                    message = "You are not authorized."
-                ))
-                409 -> emit(Resource.Error(
-                    code = 409,
-                    message = "Invalid login or password."
-                ))
+                401 -> emit(
+                    Resource.Error(
+                        code = 401,
+                        message = "You are not authorized."
+                    )
+                )
+                409 -> emit(
+                    Resource.Error(
+                        code = 409,
+                        message = "Invalid login or password."
+                    )
+                )
                 else -> emit(
                     Resource.Error(
-                    code = null,
-                    e.localizedMessage ?: "An unexpected error occurred."
-                ))
+                        code = null,
+                        e.localizedMessage ?: "An unexpected error occurred."
+                    )
+                )
             }
 
         } catch (e: IOException) {

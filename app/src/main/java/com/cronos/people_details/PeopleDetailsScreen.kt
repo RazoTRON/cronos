@@ -9,12 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.cronos.ui.theme.CronosTheme
 import com.example.domain.search.model.People
 
 @Composable
-fun PeopleDetailsScreen(people: People, navController: NavHostController) {
+fun PeopleDetailsScreen(people: People) {
     val vm: PeopleDetailsViewModel = hiltViewModel()
 
     LaunchedEffect(key1 = true) {
@@ -68,12 +67,5 @@ fun PeopleDetailsScreen(people: People, navController: NavHostController) {
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun PeopleDetailsScreenPreview() {
-    CronosTheme {
     }
 }

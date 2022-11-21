@@ -6,10 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cronos.common.ScreenState
+import com.example.data.auth.AuthRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.example.domain.auth.AuthRepository
 import com.example.domain.auth.AuthRequest
+import com.example.domain.auth.AuthResponse
 import com.example.domain.auth.AuthResult
 import com.example.domain.auth.use_case.AuthenticateUseCase
 import com.example.domain.auth.use_case.SignInUseCase
@@ -17,6 +19,10 @@ import com.example.domain.auth.use_case.SignUpUseCase
 import com.example.domain.common.Resource
 import com.example.domain.search.repository.CronosRepository
 import com.example.domain.search.use_case.GetStatusUseCase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -39,8 +45,10 @@ class LoginViewModel @Inject constructor(
     var register by mutableStateOf(false)
         private set
 
-    var authorized by mutableStateOf(false)
-        private set
+    private val _authorized = MutableStateFlow(false)
+    val authorized: StateFlow<Boolean>
+        get() = _authorized
+
 
     fun setUsernameField(username: String) {
         this.username = username
@@ -52,85 +60,24 @@ class LoginViewModel @Inject constructor(
 
     fun signUp() {
         viewModelScope.launch {
-            signUpUseCase.invoke(
-                AuthRequest(
-                    username = username,
-                    password = password
-                )
-            ).collect {
-                when (it) {
-                    is Resource.Loading -> screenState = ScreenState(isLoading = true)
-                    is Resource.Success -> {
-                        authorized = true
-                        screenState = ScreenState()
-                    }
-                    is Resource.Error -> {
-                        screenState = ScreenState(
-                            error = Resource.Error(
-                                code = it.code,
-                                message = it.message ?: "unknown singUp error"
-                            )
-                        )
-                    }
-                }
+            signUpUseCase.invoke(AuthRequest(username, password)).handleFlow {
+                signIn()
             }
-
-
         }
     }
 
     fun signIn() {
         viewModelScope.launch {
-            signInUseCase.invoke(
-                AuthRequest(
-                    username = username,
-                    password = password
-                )
-            ).collect {
-                when (it) {
-                    is Resource.Loading -> screenState = ScreenState(isLoading = true)
-                    is Resource.Success -> {
-                        authorized = true
-                        screenState = ScreenState()
-                    }
-                    is Resource.Error -> {
-                        screenState = ScreenState(
-                            error = Resource.Error(
-                                code = it.code,
-                                message = it.message ?: "unknown signIn error"
-                            )
-                        )
-                    }
-                }
+            signInUseCase.invoke(AuthRequest(username, password)).handleFlow {
+                _authorized.emit(true)
             }
-
-
         }
     }
 
     fun authenticate() {
         viewModelScope.launch {
-            authenticateUseCase.invoke(
-                AuthRequest(
-                    username = username,
-                    password = password
-                )
-            ).collect {
-                when (it) {
-                    is Resource.Loading -> screenState = ScreenState(isLoading = true)
-                    is Resource.Success -> {
-                        authorized = true
-                        screenState = ScreenState()
-                    }
-                    is Resource.Error -> {
-                        screenState = ScreenState(
-                            error = Resource.Error(
-                                code = it.code,
-                                message = it.message ?: "unknown authenticate error"
-                            )
-                        )
-                    }
-                }
+            authenticateUseCase.invoke().handleFlow {
+                _authorized.emit(true)
             }
         }
     }
@@ -140,4 +87,32 @@ class LoginViewModel @Inject constructor(
             register = it
         }
     }
+
+    private suspend fun <T> Flow<Resource<T>>.handleFlow(onSuccess: suspend () -> Unit) {
+        this.collect {
+            screenState = when (it) {
+                is Resource.Loading -> ScreenState(isLoading = true)
+                is Resource.Success -> {
+                    onSuccess.invoke()
+                    ScreenState()
+                }
+                is Resource.Error -> {
+                    ScreenState(
+                        error = Resource.Error(
+                            code = it.code,
+                            message = it.message ?: "Unknown error."
+                        )
+                    )
+                }
+            }
+        }
+    }
 }
+
+//data class LoginScreenState(
+//    val isLoading: Boolean = false,
+//    val error: Resource.Error<Unit>? = null,
+//    val username: String,
+//    val password: String,
+//    val register: Boolean
+//)
