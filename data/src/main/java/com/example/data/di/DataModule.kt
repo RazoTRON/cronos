@@ -45,7 +45,7 @@ class DataModule {
         headerInterceptor: HeaderInterceptor,
     ): RetrofitInstance {
         return RetrofitInstance(
-            headerInterceptor = headerInterceptor,
+//            headerInterceptor = headerInterceptor,
         )
     }
 

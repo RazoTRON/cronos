@@ -1,5 +1,6 @@
 package com.cronos.login
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,10 +20,8 @@ import com.example.domain.auth.use_case.SignUpUseCase
 import com.example.domain.common.Resource
 import com.example.domain.search.repository.CronosRepository
 import com.example.domain.search.use_case.GetStatusUseCase
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -34,15 +33,7 @@ class LoginViewModel @Inject constructor(
     private val authenticateUseCase: AuthenticateUseCase,
 ) : ViewModel() {
 
-    var screenState by mutableStateOf(ScreenState())
-        private set
-
-    var username by mutableStateOf("test99")
-        private set
-    var password by mutableStateOf("test2222")
-        private set
-
-    var register by mutableStateOf(false)
+    var screenState by mutableStateOf(LoginScreenState())
         private set
 
     private val _authorized = MutableStateFlow(false)
@@ -50,27 +41,29 @@ class LoginViewModel @Inject constructor(
         get() = _authorized
 
 
-    fun setUsernameField(username: String) {
-        this.username = username
+    private fun setUsernameField(username: String) {
+        screenState = screenState.copy(username = username)
     }
 
-    fun setPasswordField(password: String) {
-        this.password = password
+    private fun setPasswordField(password: String) {
+        screenState = screenState.copy(password = password)
     }
 
-    fun signUp() {
+    private fun signUp() {
         viewModelScope.launch {
-            signUpUseCase.invoke(AuthRequest(username, password)).handleFlow {
-                signIn()
-            }
+            signUpUseCase.invoke(AuthRequest(screenState.username, screenState.password))
+                .handleFlow {
+                    signIn()
+                }
         }
     }
 
-    fun signIn() {
+    private fun signIn() {
         viewModelScope.launch {
-            signInUseCase.invoke(AuthRequest(username, password)).handleFlow {
-                _authorized.emit(true)
-            }
+            signInUseCase.invoke(AuthRequest(screenState.username, screenState.password))
+                .handleFlow {
+                    _authorized.emit(true)
+                }
         }
     }
 
@@ -82,22 +75,25 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    suspend fun handleStatus() {
-        getStatusUseCase.invoke(cronosRepository).collect {
-            register = it
+    fun handleStatus() {
+        viewModelScope.launch {
+            getStatusUseCase.invoke(cronosRepository).collect {
+                screenState = screenState.copy(register = it)
+            }
         }
     }
 
     private suspend fun <T> Flow<Resource<T>>.handleFlow(onSuccess: suspend () -> Unit) {
         this.collect {
             screenState = when (it) {
-                is Resource.Loading -> ScreenState(isLoading = true)
+                is Resource.Loading -> screenState.copy(isLoading = true)
                 is Resource.Success -> {
                     onSuccess.invoke()
-                    ScreenState()
+                    screenState.copy(isLoading = false, error = null)
                 }
                 is Resource.Error -> {
-                    ScreenState(
+                    screenState.copy(
+                        isLoading = false,
                         error = Resource.Error(
                             code = it.code,
                             message = it.message ?: "Unknown error."
@@ -107,12 +103,30 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+
+
+    fun onEvent(uiEvent: UiEvent) {
+        when (uiEvent) {
+            is UiEvent.SignIn -> { signIn() }
+            is UiEvent.SignUp -> { signUp() }
+            is UiEvent.UsernameChanged -> { setUsernameField(uiEvent.value) }
+            is UiEvent.PasswordChanged -> { setPasswordField(uiEvent.value) }
+        }
+    }
+
 }
 
-//data class LoginScreenState(
-//    val isLoading: Boolean = false,
-//    val error: Resource.Error<Unit>? = null,
-//    val username: String,
-//    val password: String,
-//    val register: Boolean
-//)
+data class LoginScreenState(
+    val isLoading: Boolean = false,
+    val error: Resource.Error<Unit>? = null,
+    val username: String = "test99",
+    val password: String = "test2222",
+    val register: Boolean = false,
+)
+
+sealed class UiEvent {
+    data class UsernameChanged(val value: String) : UiEvent()
+    data class PasswordChanged(val value: String) : UiEvent()
+    object SignIn : UiEvent()
+    object SignUp : UiEvent()
+}

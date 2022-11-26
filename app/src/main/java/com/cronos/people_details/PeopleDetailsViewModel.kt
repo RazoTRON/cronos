@@ -1,6 +1,9 @@
 package com.cronos.people_details
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,44 +29,77 @@ class PeopleDetailsViewModel @Inject constructor(
     val findAnketaUseCase: FindAnketaUseCase,
     val findPhoneUseCase: FindPhoneUseCase,
 ) : ViewModel() {
-    val listOfPassport = mutableStateListOf<Passport>()
-    val listOfAddress = mutableStateListOf<Address>()
-    val listOfAnketa = mutableStateListOf<Anketa>()
-    val listOfPhones = mutableStateListOf<Phone>()
+//    val listOfPassport = mutableStateListOf<Passport>()
+//    val listOfAddress = mutableStateListOf<Address>()
+//    val listOfAnketa = mutableStateListOf<Anketa>()
+//    val listOfPhones = mutableStateListOf<Phone>()
+
+    var peopleDetailsScreenState by mutableStateOf(PeopleDetailsScreenState())
 
     fun findPhones(id: String) {
         viewModelScope.launch {
-            findPhoneUseCase.invoke(PhoneRequest(id)).handleFlow(listOfPhones)
+            findPhoneUseCase.invoke(PhoneRequest(id)).handleFlow {
+                it?.let {
+                    peopleDetailsScreenState = peopleDetailsScreenState.copy(
+                        listOfPhones = it
+                    )
+                }
+            }
         }
     }
 
     fun findAddress(id: String) {
         viewModelScope.launch {
-            findAddressUseCase.invoke(id).handleFlow(listOfAddress)
+            findAddressUseCase.invoke(id).handleFlow {
+                it?.let {
+                    peopleDetailsScreenState = peopleDetailsScreenState.copy(
+                        listOfAddress = it
+                    )
+                }
+            }
         }
     }
 
     fun findPassport(id: String) {
         viewModelScope.launch {
-            findPassportUseCase.invoke(id).handleFlow(listOfPassport)
+            findPassportUseCase.invoke(id).handleFlow {
+                it?.let {
+                    peopleDetailsScreenState = peopleDetailsScreenState.copy(
+                        listOfPassport = it
+                    )
+                }
+            }
         }
     }
 
     fun findAnketa(id: String) {
         viewModelScope.launch {
-            findAnketaUseCase.invoke(id).handleFlow(listOfAnketa)
+            findAnketaUseCase.invoke(id).handleFlow {
+                it?.let {
+                    peopleDetailsScreenState = peopleDetailsScreenState.copy(
+                        listOfAnketa = it
+                    )
+                }
+            }
         }
     }
 
-    suspend fun <T> Flow<Resource<List<T>>>.handleFlow(list: SnapshotStateList<T>) {
+    private suspend fun <T> Flow<Resource<List<T>>>.handleFlow(onSuccess: (List<T>?) -> Unit) {
         this.collect { data ->
             when (data) {
                 is Resource.Loading -> {}
                 is Resource.Success -> {
-                    data.data?.forEach { list.add(it) }
+                    onSuccess(data.data)
                 }
                 is Resource.Error -> {}
             }
         }
     }
 }
+
+data class PeopleDetailsScreenState(
+    val listOfPassport: List<Passport> = listOf(),
+    val listOfAddress: List<Address> = listOf(),
+    val listOfAnketa: List<Anketa> = listOf(),
+    val listOfPhones: List<Phone> = listOf()
+)

@@ -16,13 +16,20 @@ import com.example.domain.search.model.People
 fun PeopleDetailsScreen(people: People) {
     val vm: PeopleDetailsViewModel = hiltViewModel()
 
-    LaunchedEffect(key1 = true) {
+    val peopleDetailsScreenState = vm.peopleDetailsScreenState
+
+    LaunchedEffect(true) {
         vm.findPassport(people.peopleId)
         vm.findAddress(people.peopleId)
         vm.findAnketa(people.peopleId)
         vm.findPhones(people.peopleId)
     }
 
+    PeopleDetailsScreenContent(people, peopleDetailsScreenState)
+}
+
+@Composable
+fun PeopleDetailsScreenContent(people: People, peopleDetailsScreenState: PeopleDetailsScreenState) {
     Surface {
         Column(
             modifier = Modifier
@@ -36,9 +43,9 @@ fun PeopleDetailsScreen(people: People) {
                 Text(people.dateOfBirthday)
             }
 
-            Text(text = "Phones:\n" + vm.listOfPhones.map { it.phone }.plus(people.phone).toSet().joinToString())
+            Text(text = "Phones:\n" + peopleDetailsScreenState.listOfPhones.map { it.phone }.plus(people.phone).toSet().joinToString())
 
-            vm.listOfAddress.forEach {
+            peopleDetailsScreenState.listOfAddress.forEach {
                 Column {
                     Text(text = "Region: ${it.region}")
                     Text(text = "City: ${it.city}")
@@ -46,7 +53,7 @@ fun PeopleDetailsScreen(people: People) {
                 }
             }
 
-            vm.listOfPassport.forEach {
+            peopleDetailsScreenState.listOfPassport.forEach {
                 Column {
                     Text(text = "INN: ${it.inn} (${it.date})")
                     Text(text = "Organization: ${it.by}")
@@ -54,7 +61,7 @@ fun PeopleDetailsScreen(people: People) {
                 }
             }
 
-            vm.listOfAnketa.forEach {
+            peopleDetailsScreenState.listOfAnketa.forEach {
                 Column {
                     Text(text = "Family status: ${it.familyStatus}")
                     Text(text = "Children: ${it.children}")
@@ -67,5 +74,32 @@ fun PeopleDetailsScreen(people: People) {
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewPeopleDetailsScreen() {
+    CronosTheme {
+        PeopleDetailsScreenContent(people = People(
+            id = "",
+            peopleId = "",
+            phone = "",
+            name = "",
+            surname = "",
+            middleName = "",
+            dateOfBirthday = "",
+            key = "",
+            phoneIdList = listOf(),
+            addressIdList = listOf(),
+            passportIdList = listOf(),
+            anketaIdList = listOf()
+        ), peopleDetailsScreenState = PeopleDetailsScreenState(
+            listOfPassport = listOf(),
+            listOfAddress = listOf(),
+            listOfAnketa = listOf(),
+            listOfPhones = listOf()
+        )
+        )
     }
 }

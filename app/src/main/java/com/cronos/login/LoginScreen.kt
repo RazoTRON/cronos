@@ -1,10 +1,6 @@
 package com.cronos.login
 
-import android.os.Bundle
-import android.provider.Settings
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,37 +13,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.cronos.common.composables.StandardTextField
 import com.cronos.ui.theme.CronosTheme
-import com.cronos.util.AppNavigation
 import com.cronos.util.CronosScreens
-import com.example.data.GlobalNavigationHandler
-import com.example.domain.auth.use_case.AuthenticateUseCase
-import com.example.domain.auth.use_case.SignInUseCase
-import com.example.domain.auth.use_case.SignUpUseCase
-import com.example.domain.search.repository.CronosRepository
-import com.example.domain.search.use_case.GetStatusUseCase
-import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 
 @Composable
 fun LoginScreen(navController: NavHostController, vm: LoginViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
 
-    val androidId = Settings.Secure.getString(
-        context.contentResolver,
-        Settings.Secure.ANDROID_ID
-    )
-
     LaunchedEffect(true) {
         vm.handleStatus()
         vm.authenticate()
-
         vm.authorized.collect {
             if (it) {
                 navController.navigate(CronosScreens.Search.name) {
@@ -60,65 +38,79 @@ fun LoginScreen(navController: NavHostController, vm: LoginViewModel = hiltViewM
     }
 
     if (vm.screenState.error != null) {
-        Toast.makeText(context, vm.screenState.error?.message ?: "Unknown error", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, vm.screenState.error?.message ?: "Unknown error", Toast.LENGTH_LONG)
+            .show()
     }
 
+    LoginScreenContent(
+        screenState = vm.screenState,
+        events = vm::onEvent
+    )
 
 }
 
-//@Composable
-//fun SearchScreenContent(
-//    username: String,
-//) {
-//    val scrollState = rememberScrollState()
-//
-//    Surface {
-//        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//            Column(
-//                modifier = Modifier
-//                    .padding(20.dp)
-//                    .verticalScroll(scrollState),
-//                verticalArrangement = Arrangement.spacedBy(20.dp)
-//            ) {
-//                Text(
-//                    text = "Login",
-//                    style = MaterialTheme.typography.h4,
-//                    fontWeight = FontWeight.Bold
-//                )
-//                Text(text = "Enter your login and password_")
-//                StandardTextField(
-//                    vm.username,
-//                    placeholder = "Login",
-//                    onValueChange = { vm.setUsernameField(it) })
-//                StandardTextField(
-//                    vm.password,
-//                    placeholder = "Password",
-//                    onValueChange = { vm.setPasswordField(it) })
-//                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
-//                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-//                        Button(onClick = {
-//                            vm.signIn()
-//                        }) {
-//                            Text(text = "> LOGIN", color = MaterialTheme.colors.onPrimary)
-//                        }
-//                        if (vm.register) {
-//                            Button(enabled = vm.register, onClick = {
-//                                vm.signUp()
-//                            }) {
-//                                Text(text = "> REGISTER", color = MaterialTheme.colors.onPrimary)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+@Composable
+fun LoginScreenContent(
+    screenState: LoginScreenState,
+    events: (UiEvent) -> Unit
+) {
+    val scrollState = rememberScrollState()
+
+    Surface {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .verticalScroll(scrollState),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(
+                    text = "Login",
+                    style = MaterialTheme.typography.h4,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(text = "Enter your login and password_")
+                StandardTextField(
+                    screenState.username,
+                    placeholder = "Login",
+                    onValueChange = { events(UiEvent.UsernameChanged(it)) })
+                StandardTextField(
+                    screenState.password,
+                    placeholder = "Password",
+                    onValueChange = { events(UiEvent.PasswordChanged(it)) })
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Button(onClick = {
+                            events(UiEvent.SignIn)
+//                            onSignIn.invoke()
+                        }) {
+                            Text(text = "> LOGIN", color = MaterialTheme.colors.onPrimary)
+                        }
+                        if (screenState.register) {
+                            Button(onClick = {
+                                events(UiEvent.SignUp)
+//                                onSignUp.invoke()
+                            }) {
+                                Text(text = "> REGISTER", color = MaterialTheme.colors.onPrimary)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Preview
 @Composable
-fun SearchScreenPreview() {
+fun LoginScreenPreview() {
     CronosTheme {
-        LoginScreen(rememberNavController())
+        LoginScreenContent(screenState = LoginScreenState(
+            isLoading = false,
+            error = null,
+            username = "",
+            password = "",
+            register = false
+        ), events = { })
     }
 }
