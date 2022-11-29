@@ -4,19 +4,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.common.Resource
-import com.example.domain.search.model.request.PhoneRequest
 import com.example.domain.search.model.Address
 import com.example.domain.search.model.Anketa
 import com.example.domain.search.model.Passport
-import com.example.domain.search.model.Phone
 import com.example.domain.search.use_case.FindAddressUseCase
 import com.example.domain.search.use_case.FindAnketaUseCase
 import com.example.domain.search.use_case.FindPassportUseCase
-import com.example.domain.search.use_case.FindPhoneUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -27,26 +23,9 @@ class PeopleDetailsViewModel @Inject constructor(
     val findPassportUseCase: FindPassportUseCase,
     val findAddressUseCase: FindAddressUseCase,
     val findAnketaUseCase: FindAnketaUseCase,
-    val findPhoneUseCase: FindPhoneUseCase,
 ) : ViewModel() {
-//    val listOfPassport = mutableStateListOf<Passport>()
-//    val listOfAddress = mutableStateListOf<Address>()
-//    val listOfAnketa = mutableStateListOf<Anketa>()
-//    val listOfPhones = mutableStateListOf<Phone>()
 
     var peopleDetailsScreenState by mutableStateOf(PeopleDetailsScreenState())
-
-    fun findPhones(id: String) {
-        viewModelScope.launch {
-            findPhoneUseCase.invoke(PhoneRequest(id)).handleFlow {
-                it?.let {
-                    peopleDetailsScreenState = peopleDetailsScreenState.copy(
-                        listOfPhones = it
-                    )
-                }
-            }
-        }
-    }
 
     fun findAddress(id: String) {
         viewModelScope.launch {
@@ -101,5 +80,4 @@ data class PeopleDetailsScreenState(
     val listOfPassport: List<Passport> = listOf(),
     val listOfAddress: List<Address> = listOf(),
     val listOfAnketa: List<Anketa> = listOf(),
-    val listOfPhones: List<Phone> = listOf()
 )

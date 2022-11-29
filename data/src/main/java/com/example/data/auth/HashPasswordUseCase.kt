@@ -5,7 +5,7 @@ import android.provider.Settings
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 
-class HashPasswordUseCase(val context: Context) {
+class HashPasswordUseCase(private val context: Context) {
     fun invoke(password: String): String {
         val androidId = Settings.Secure.getString(
             context.contentResolver,

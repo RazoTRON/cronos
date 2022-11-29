@@ -35,17 +35,20 @@ fun LoginScreen(navController: NavHostController, vm: LoginViewModel = hiltViewM
                 }
             }
         }
-    }
 
-    if (vm.screenState.error != null) {
-        Toast.makeText(context, vm.screenState.error?.message ?: "Unknown error", Toast.LENGTH_LONG)
-            .show()
     }
 
     LoginScreenContent(
         screenState = vm.screenState,
         events = vm::onEvent
     )
+
+    LaunchedEffect(vm.screenState.error) {
+        if (vm.screenState.error != null) {
+            Toast.makeText(context, vm.screenState.error?.message ?: "Unknown error", Toast.LENGTH_LONG)
+                .show()
+        }
+    }
 
 }
 

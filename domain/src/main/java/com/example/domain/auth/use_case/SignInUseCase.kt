@@ -1,12 +1,10 @@
 package com.example.domain.auth.use_case
 
 import com.example.domain.auth.AuthRepository
-import com.example.domain.auth.AuthRequest
-import com.example.domain.auth.AuthResponse
-import com.example.domain.auth.AuthResult
+import com.example.domain.auth.request.AuthRequest
+import com.example.domain.auth.request.AuthResponse
 import com.example.domain.common.ApiResponse
 import com.example.domain.common.Resource
-import com.example.domain.search.model.People
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException

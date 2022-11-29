@@ -10,9 +10,10 @@ import com.example.data.auth.api.AuthApi
 import com.example.data.auth.api.NoAuthApi
 import com.example.data.auth.api.RefreshTokenApi
 import com.example.data.remote.*
-import com.example.data.repository.CronosRepositoryImpl
+import com.example.data.search.CronosApi
+import com.example.data.search.CronosServiceImpl
 import com.example.domain.auth.AuthRepository
-import com.example.domain.search.repository.CronosRepository
+import com.example.domain.search.CronosService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -70,8 +71,8 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideRepository(api: CronosApi): CronosRepository {
-        return CronosRepositoryImpl(api)
+    fun provideRepository(api: CronosApi): CronosService {
+        return CronosServiceImpl(api)
     }
 
     @Provides

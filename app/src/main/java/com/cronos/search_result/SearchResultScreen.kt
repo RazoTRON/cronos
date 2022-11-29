@@ -28,9 +28,8 @@ fun SearchResultRoute(
     list: SnapshotStateList<People>,
     findPeople: (() -> Unit),
 ) {
-    val context = LocalContext.current
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(true) {
         findPeople()
     }
 
@@ -38,28 +37,9 @@ fun SearchResultRoute(
 
     var maxIndex by rememberSaveable { mutableStateOf(0) }
 
-//    LaunchedEffect(searchResultScreenState.error) {
-//        if (searchResultScreenState.error != null) {
-//            when (searchResultScreenState.error.code) {
-//                401 -> {
-//                    navController.navigate(CronosScreens.Login.name) {
-//                        popUpTo(navController.currentBackStackEntry?.destination?.parent?.id ?: 0) {
-//                            inclusive = true
-//                        }
-//                    }
-//                }
-//                else -> Toast.makeText(
-//                    context,
-//                    searchResultScreenState.error.message,
-//                    Toast.LENGTH_LONG
-//                )
-//            }
-//        }
-//    }
-
     Surface {
         if (screenState.error != null) {
-            ErrorMessage(text = screenState.error?.message.orEmpty())
+            ErrorMessage(text = screenState.error.message.orEmpty())
         }
         LazyColumn(
             modifier = Modifier
@@ -72,9 +52,8 @@ fun SearchResultRoute(
                     maxIndex = i
                     findPeople()
                 }
-                ResultCard(people = people) {
-                    navController.navigate("${CronosScreens.PeopleDetails.name}/${people.id}") {
-                    }
+                ResultCard(people = people, i + 1) {
+                    navController.navigate("${CronosScreens.PeopleDetails.name}/${people.id}")
                 }
             }
             if (screenState.isLoading) {
@@ -127,11 +106,7 @@ fun SearchResultScreenPreview() {
                     surname = "Mihalatiuk",
                     middleName = "Viktorovich",
                     dateOfBirthday = "23.12.1996",
-                    key = "dfsdfsdf",
-                    phoneIdList = listOf(),
-                    addressIdList = listOf(),
-                    passportIdList = listOf(),
-                    anketaIdList = listOf()
+                    key = "dfsdfsdf", inn = "323123", phoneList = listOf("380950559022"),
                 )
             ),
             findPeople = {}

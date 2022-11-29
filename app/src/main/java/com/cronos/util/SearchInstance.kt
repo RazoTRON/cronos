@@ -31,8 +31,4 @@ object SearchInstance {
         return this.peopleRequest
     }
 
-    fun PeopleRequest.asList(): List<String> {
-        return listOf(phone, name, surname, middleName, dateOfBirthday, inn)
-    }
-
 }

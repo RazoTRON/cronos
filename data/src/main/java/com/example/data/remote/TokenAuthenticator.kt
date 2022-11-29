@@ -2,17 +2,18 @@ package com.example.data.remote
 
 import android.content.SharedPreferences
 import android.util.Log
-import com.example.data.GlobalNavigator
+import com.example.domain.util.GlobalNavigator
 import com.example.data.auth.api.RefreshTokenApi
 import com.example.data.util.BASE_URL
-import com.example.domain.auth.AuthResponse
-import com.example.domain.auth.TokenRequest
+import com.example.domain.auth.request.AuthResponse
+import com.example.domain.auth.request.TokenRequest
 import com.example.domain.common.ApiResponse
 import kotlinx.coroutines.*
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import okhttp3.internal.EMPTY_RESPONSE
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -30,15 +31,20 @@ class TokenAuthenticator(
     private var logout = false
     override fun authenticate(route: Route?, response: Response): Request? {
 
+        Log.e("TOKEN", "(logout: $logout, isEx: $isExecuting)")
         if (isExecuting) {
             runBlocking {
                 while (isExecuting) {
+                    Log.e("TOKEN", "Wait on end refresh token operation")
                     delay(100)
                 }
             }
         } else {
             logout = false
             isExecuting = true
+
+
+            Log.e("TOKEN", "Start refresh token operation")
 
             val newTokens = runBlocking {
                 try {
@@ -72,8 +78,7 @@ class TokenAuthenticator(
     }
 
     private suspend fun refreshToken(): ApiResponse<AuthResponse>? {
-        val refreshToken = pref.getRefreshToken() ?: return null
+        val refreshToken = pref.getRefreshToken() ?: throw HttpException(retrofit2.Response.error<AuthResponse>(401, EMPTY_RESPONSE))
         return retrofit.refreshToken(TokenRequest(refreshToken))
     }
 }
-

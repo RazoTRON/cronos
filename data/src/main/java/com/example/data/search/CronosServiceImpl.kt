@@ -1,13 +1,15 @@
-package com.example.data.repository
+package com.example.data.search
 
-import com.example.data.remote.CronosApi
-import com.example.data.remote.dto.*
-import com.example.domain.search.repository.CronosRepository
+import com.example.data.search.dto.toAddress
+import com.example.data.search.dto.toAnketa
+import com.example.data.search.dto.toPassport
+import com.example.data.search.dto.toPeople
+import com.example.domain.search.CronosService
 import com.example.domain.search.model.*
 import com.example.domain.search.model.request.*
 import retrofit2.HttpException
 
-class CronosRepositoryImpl(val api: CronosApi) : CronosRepository {
+class CronosServiceImpl(val api: CronosApi) : CronosService {
     override suspend fun findPeoples(request: PeopleRequest): List<People> {
         val response = api.findPeoples(
             phone = request.phone,
@@ -17,7 +19,7 @@ class CronosRepositoryImpl(val api: CronosApi) : CronosRepository {
             name = request.name,
             surname = request.surname,
             middleName = request.middleName,
-            dateOfBirthday = request.dateOfBirthday,
+            dateOfBirthday = request.dateOfBirthday.split('.').let { if (it.size > 2) "${it[2]}-${it[1]}-${it[0]}" else it.joinToString(".") },
             key = request.key,
             inn = request.inn
         )
@@ -55,18 +57,5 @@ class CronosRepositoryImpl(val api: CronosApi) : CronosRepository {
         } else {
             throw HttpException(response)
         }
-    }
-
-    override suspend fun findPhone(request: PhoneRequest): List<Phone> {
-        val response = api.findPhone(request.id)
-        if (response.isSuccessful && response.body() != null) {
-            return response.body()!!.map { it.toPhone() }
-        } else {
-            throw HttpException(response)
-        }
-    }
-
-    override suspend fun status() {
-        if (!api.status().isSuccessful) throw Exception("Status Error.")
     }
 }

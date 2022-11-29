@@ -1,4 +1,4 @@
-package com.example.domain.auth
+package com.example.domain.auth.request
 
 data class AuthResponse(
     val accessToken: String,

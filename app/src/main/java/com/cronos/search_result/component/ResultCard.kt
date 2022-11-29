@@ -3,6 +3,7 @@ package com.cronos.search_result.component
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,7 +16,7 @@ import com.example.domain.search.model.Phone
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ResultCard(people: People, onClick: () -> Unit) {
+fun ResultCard(people: People, counter: Int, onClick: () -> Unit) {
     Card(onClick = onClick) {
         Column(
             modifier = Modifier.padding(10.dp),
@@ -38,6 +39,7 @@ fun ResultCard(people: People, onClick: () -> Unit) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(text = people.phone)
+                Text(text = "$counter", color = MaterialTheme.colors.onBackground.copy(alpha = 0.3f))
             }
         }
     }
@@ -57,16 +59,9 @@ fun Preview() {
                 surname = "Migalatiuk",
                 middleName = "Viktorovich",
                 dateOfBirthday = "05.07.1996",
-                key = "",
-                phoneIdList = listOf(
-                    Phone("", "380950559022"),
-                    Phone("", "380994735753"),
-                    Phone("", "380522341232")
-                ),
-                addressIdList = listOf(),
-                passportIdList = listOf(),
-                anketaIdList = listOf(),
-            )
+                key = "", inn = "", phoneList = listOf("380950559022"),
+            ),
+            counter = 4
         ) {
 
         }

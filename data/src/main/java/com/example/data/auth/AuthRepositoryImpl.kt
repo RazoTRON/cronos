@@ -10,6 +10,8 @@ import com.example.data.util.HASH_PASSWORD
 import com.example.data.util.REFRESH_TOKEN
 import com.example.data.util.USER_ID
 import com.example.domain.auth.*
+import com.example.domain.auth.request.AuthRequest
+import com.example.domain.auth.request.AuthResponse
 import com.example.domain.common.ApiResponse
 import okhttp3.internal.EMPTY_RESPONSE
 import retrofit2.HttpException
@@ -30,16 +32,6 @@ class AuthRepositoryImpl(
         return response
     }
 
-//    override suspend fun signUp(authRequest: AuthRequest): AuthResult<Unit> {
-//        return authErrorHandler {
-//            val response = noAuthApi.signUp(
-//                authRequest.copy(password = hashPasswordUseCase.invoke(authRequest.password))
-//            )
-//            Log.e("AUTH", response.message)
-//            signIn(authRequest)
-//        }
-//    }
-
     override suspend fun signIn(authRequest: AuthRequest): ApiResponse<AuthResponse> {
         val hashedPassword = hashPasswordUseCase.invoke(authRequest.password)
         val response = api.signIn(authRequest.copy(password = hashedPassword))
@@ -55,6 +47,10 @@ class AuthRepositoryImpl(
     override suspend fun authenticate() {
         val token = prefs.getAccessToken() ?: throw HttpException(Response.error<Unit>(401, EMPTY_RESPONSE))
         api.authenticate(token = "Bearer $token")
+    }
+
+    override suspend fun status() {
+        if (!noAuthApi.status().isSuccessful) throw Exception("Status Error.")
     }
 }
 

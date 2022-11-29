@@ -1,6 +1,9 @@
-package com.example.data.remote
+package com.example.data.search
 
-import com.example.data.remote.dto.*
+import com.example.data.search.dto.AddressDto
+import com.example.data.search.dto.AnketaDto
+import com.example.data.search.dto.PassportDto
+import com.example.data.search.dto.PeopleDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -21,11 +24,6 @@ interface CronosApi {
         @Query("inn") inn: String,
     ): Response<List<PeopleDto>>
 
-    @GET("/api/phone/find")
-    suspend fun findPhone(
-        @Query("peopleId") id: String,
-    ): Response<List<PhoneDto>>
-
     @GET("/api/passport/find")
     suspend fun findPassport(
         @Query("id") id: String
@@ -40,8 +38,4 @@ interface CronosApi {
     suspend fun findAnketa(
         @Query("id") id: String
     ): Response<List<AnketaDto>>
-
-
-    @GET("/status")
-    suspend fun status(): Response<Unit>
 }

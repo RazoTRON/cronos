@@ -10,13 +10,9 @@ data class People(
     val middleName: String,
     val dateOfBirthday: String,
     val key: String,
-    val phoneIdList: List<Phone>,
-    val addressIdList: List<Address>,
-    val passportIdList: List<Passport>,
-    val anketaIdList: List<Anketa>,
-) {
-    lateinit var phoneList: List<String?>
-}
+    val inn: String,
+    val phoneList: List<String>,
+)
 
 fun List<People>.getPeopleById(id: String): People {
     return this.first { it.id == id }

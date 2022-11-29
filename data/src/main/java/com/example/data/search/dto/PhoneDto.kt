@@ -1,4 +1,4 @@
-package com.example.data.remote.dto
+package com.example.data.search.dto
 
 
 import com.example.domain.search.model.Phone

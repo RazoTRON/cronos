@@ -3,13 +3,13 @@ package com.example.domain.search.use_case
 import com.example.domain.common.Resource
 import com.example.domain.search.model.Anketa
 import com.example.domain.search.model.request.AnketaRequest
-import com.example.domain.search.repository.CronosRepository
+import com.example.domain.search.CronosService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
 
-class FindAnketaUseCase(val repository: CronosRepository) {
+class FindAnketaUseCase(val repository: CronosService) {
     fun invoke(id: String): Flow<Resource<List<Anketa>>> = flow {
         try {
             emit(Resource.Loading())

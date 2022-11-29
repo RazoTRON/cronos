@@ -1,32 +1,24 @@
 package com.cronos.login
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cronos.common.ScreenState
-import com.example.data.auth.AuthRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import com.example.domain.auth.AuthRepository
-import com.example.domain.auth.AuthRequest
-import com.example.domain.auth.AuthResponse
-import com.example.domain.auth.AuthResult
+import com.example.domain.auth.request.AuthRequest
 import com.example.domain.auth.use_case.AuthenticateUseCase
 import com.example.domain.auth.use_case.SignInUseCase
 import com.example.domain.auth.use_case.SignUpUseCase
 import com.example.domain.common.Resource
-import com.example.domain.search.repository.CronosRepository
-import com.example.domain.search.use_case.GetStatusUseCase
-import kotlinx.coroutines.channels.Channel
+import com.example.domain.search.CronosService
+import com.example.domain.auth.use_case.GetStatusUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val cronosRepository: CronosRepository,
     private val getStatusUseCase: GetStatusUseCase,
     private val signUpUseCase: SignUpUseCase,
     private val signInUseCase: SignInUseCase,
@@ -77,7 +69,7 @@ class LoginViewModel @Inject constructor(
 
     fun handleStatus() {
         viewModelScope.launch {
-            getStatusUseCase.invoke(cronosRepository).collect {
+            getStatusUseCase.invoke().collect {
                 screenState = screenState.copy(register = it)
             }
         }

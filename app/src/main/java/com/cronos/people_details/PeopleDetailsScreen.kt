@@ -22,7 +22,6 @@ fun PeopleDetailsScreen(people: People) {
         vm.findPassport(people.peopleId)
         vm.findAddress(people.peopleId)
         vm.findAnketa(people.peopleId)
-        vm.findPhones(people.peopleId)
     }
 
     PeopleDetailsScreenContent(people, peopleDetailsScreenState)
@@ -43,7 +42,7 @@ fun PeopleDetailsScreenContent(people: People, peopleDetailsScreenState: PeopleD
                 Text(people.dateOfBirthday)
             }
 
-            Text(text = "Phones:\n" + peopleDetailsScreenState.listOfPhones.map { it.phone }.plus(people.phone).toSet().joinToString())
+            Text(text = "Phones:\n" + people.phoneList.plus(people.phone).toSet().joinToString())
 
             peopleDetailsScreenState.listOfAddress.forEach {
                 Column {
@@ -90,15 +89,12 @@ fun PreviewPeopleDetailsScreen() {
             middleName = "",
             dateOfBirthday = "",
             key = "",
-            phoneIdList = listOf(),
-            addressIdList = listOf(),
-            passportIdList = listOf(),
-            anketaIdList = listOf()
+            inn = "",
+            phoneList = listOf(),
         ), peopleDetailsScreenState = PeopleDetailsScreenState(
             listOfPassport = listOf(),
             listOfAddress = listOf(),
             listOfAnketa = listOf(),
-            listOfPhones = listOf()
         )
         )
     }

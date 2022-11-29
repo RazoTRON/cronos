@@ -1,11 +1,11 @@
-package com.example.data
+package com.example.domain.util
 
 object GlobalNavigator {
 
     private var handler: GlobalNavigationHandler? = null
 
     fun registerHandler(handler: GlobalNavigationHandler) {
-        this.handler = handler
+        GlobalNavigator.handler = handler
     }
 
     fun unregisterHandler() {

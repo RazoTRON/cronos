@@ -1,11 +1,12 @@
-package com.example.domain.search.use_case
+package com.example.domain.auth.use_case
 
-import com.example.domain.search.repository.CronosRepository
+import com.example.domain.auth.AuthRepository
+import com.example.domain.search.CronosService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetStatusUseCase(repository: CronosRepository) {
-    fun invoke(repository: CronosRepository): Flow<Boolean> = flow {
+class GetStatusUseCase(val repository: AuthRepository) {
+    fun invoke(): Flow<Boolean> = flow {
         try {
             emit(false)
             repository.status()
