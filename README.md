@@ -1,5 +1,6 @@
+#  Search Client (Android)
 
-
+## 🏗️️ Built with
 
 | What              | How                                                                               |
 |-------------------|-----------------------------------------------------------------------------------|
@@ -14,7 +15,7 @@
 
 | What              | How                                                                               |
 |-------------------|-----------------------------------------------------------------------------------|
-| 🌐 Network        | [Ktor 2.0](https://github.com/ktorio/ktor)                                        |
+| 🌐 Server framework        | [Ktor 2.0](https://github.com/ktorio/ktor)                                        |
 | 💾 Database         | [MongoDB](https://www.mongodb.com/)                                                  |
 | 📄 DB toolkit     | [KMongo](https://litote.org/kmongo/)                                                  |
 | 💉 Server DI      | [Koin 3.0](https://github.com/InsertKoinIO/koin)                                  |  
@@ -23,3 +24,9 @@
 | 🗄️ Web server     | [Nginx](https://github.com/InsertKoinIO/koin)                                      | 
 | 🎛️ Server OS      | [Ubuntu](https://ru.wikipedia.org/wiki/Android_SDK)                               |  
 | 🏗 Architecture   | [Clean Architecture]()                                                           |
+
+## ✍️ Author
+
+👤 **RazoTRON** (Vladislav M)
+
+* Telegram: <a href="https://t.me/razotron" target="_blank">@razotron</a>
