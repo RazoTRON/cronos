@@ -4,6 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cronos.ui.theme.CronosTheme
@@ -20,7 +31,6 @@ class MainActivity : ComponentActivity(), GlobalNavigationHandler {
         super.onCreate(savedInstanceState)
         setContent {
             navController = rememberNavController()
-
             CronosTheme {
                 Scaffold {
                     AppNavigation(navController = navController)

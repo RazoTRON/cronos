@@ -2,7 +2,7 @@ package com.example.domain.search.model
 
 
 data class People(
-    val id: String,
+    val bsonId: String,
     val peopleId: String,
     val phone: String,
     val name: String,
@@ -15,5 +15,5 @@ data class People(
 )
 
 fun List<People>.getPeopleById(id: String): People {
-    return this.first { it.id == id }
+    return this.first { it.bsonId == id }
 }

@@ -45,18 +45,18 @@ fun SearchScreen(navController: NavHostController) {
                 placeholder = "Phone",
                 onValueChange = { vm.setPeoplePhone(it.trim()) })
             StandardTextField(
-                vm.name,
-                placeholder = "Name",
-                onValueChange = { name ->
-                    vm.setPeopleName(
-                        name.trim().lowercase().replaceFirstChar { it.uppercase() })
-                })
-            StandardTextField(
                 vm.surname,
                 placeholder = "Surname",
                 onValueChange = { surname ->
                     vm.setPeopleSurname(
                         surname.trim().lowercase().replaceFirstChar { it.uppercase() })
+                })
+            StandardTextField(
+                vm.name,
+                placeholder = "Name",
+                onValueChange = { name ->
+                    vm.setPeopleName(
+                        name.trim().lowercase().replaceFirstChar { it.uppercase() })
                 })
             StandardTextField(
                 vm.middleName,

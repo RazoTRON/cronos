@@ -1,15 +1,25 @@
 package com.cronos.login
 
+import android.provider.Settings
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,7 +55,11 @@ fun LoginScreen(navController: NavHostController, vm: LoginViewModel = hiltViewM
 
     LaunchedEffect(vm.screenState.error) {
         if (vm.screenState.error != null) {
-            Toast.makeText(context, vm.screenState.error?.message ?: "Unknown error", Toast.LENGTH_LONG)
+            Toast.makeText(
+                context,
+                vm.screenState.error?.message ?: "Unknown error",
+                Toast.LENGTH_LONG
+            )
                 .show()
         }
     }
@@ -55,9 +69,11 @@ fun LoginScreen(navController: NavHostController, vm: LoginViewModel = hiltViewM
 @Composable
 fun LoginScreenContent(
     screenState: LoginScreenState,
-    events: (UiEvent) -> Unit
+    events: (UiEvent) -> Unit,
 ) {
     val scrollState = rememberScrollState()
+
+    val showPassword by remember { mutableStateOf(false) }
 
     Surface {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -74,13 +90,16 @@ fun LoginScreenContent(
                 )
                 Text(text = "Enter your login and password_")
                 StandardTextField(
-                    screenState.username,
+                    value = screenState.username,
                     placeholder = "Login",
                     onValueChange = { events(UiEvent.UsernameChanged(it)) })
                 StandardTextField(
-                    screenState.password,
+                    value = screenState.password,
                     placeholder = "Password",
-                    onValueChange = { events(UiEvent.PasswordChanged(it)) })
+                    onValueChange = { events(UiEvent.PasswordChanged(it)) },
+                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = { if (showPassword) Icon(Icons.Default.Visibility, null) else Icon(Icons.Default.VisibilityOff, null)}
+                )
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         Button(onClick = {
@@ -116,4 +135,34 @@ fun LoginScreenPreview() {
             register = false
         ), events = { })
     }
+}
+
+
+@Composable()
+@Preview()
+fun PreviewDefault() {
+    Test()
+    CronosTheme {
+    }
+}
+
+@Composable
+fun Test() {
+    var state by remember { mutableStateOf("") }
+    Column {
+        TextField(
+            value = state,
+            onValueChange = {
+                state = it
+            },
+            shape = TextFieldDefaults.TextFieldShape
+        )
+        OutlinedTextField(value = "", onValueChange = {})
+    }
+}
+
+@Preview
+@Composable
+fun Test2() {
+
 }

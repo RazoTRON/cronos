@@ -4,28 +4,26 @@ import com.example.domain.search.model.*
 import com.google.gson.annotations.SerializedName
 
 data class PeopleDto(
-    val dateB: String,
-    @SerializedName("ecb_id")
-    val ecbId: String,
-    @SerializedName("enum_id")
-    val enumId: String,
     @SerializedName("bson_id")
-    val id: String,
+    val bsonId: String,
+//    @SerializedName("ecb_id")
+//    val ecbId: String,
     @SerializedName("id")
-    val old_id: String,
-    val key: String,
+    val peopleId: String,
     val login: String,
-    @SerializedName("middle_name")
-    val middleName: String,
-    val name: String,
-    val inn: String,
     val phoneList: List<String>,
     val surname: String,
+    val name: String,
+    @SerializedName("middle_name")
+    val middleName: String,
+    val dateB: String,
+    val key: String,
+    val inn: String,
 )
 
 fun PeopleDto.toPeople() = People(
-    id = this.id,
-    peopleId = this.old_id,
+    bsonId = this.bsonId,
+    peopleId = this.peopleId,
     phone = this.login,
     name = this.name,
     surname = this.surname,

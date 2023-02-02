@@ -13,7 +13,7 @@ class FindPassportUseCase(val repository: CronosService) {
     fun invoke(id: String): Flow<Resource<List<Passport>>> = flow {
         try {
             emit(Resource.Loading())
-            val data = repository.findPassport(PassportRequest(id))
+            val data = repository.getPassport(PassportRequest(id))
             emit(Resource.Success(data))
         } catch (e: HttpException) {
             emit(Resource.Error(code = null, e.localizedMessage ?: "An unexpected error occurred."))

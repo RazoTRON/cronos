@@ -28,7 +28,7 @@ class FindPeoplesUseCase(val repository: CronosService) {
 
         } catch (e: IOException) {
             if (e is SocketTimeoutException) {
-                emit(Resource.Error(code = null,"Please, specify your request."))
+                emit(Resource.Error(code = null,"Connection timeout error. Check your internet connection."))
             } else {
                 emit(
                     Resource.Error(

@@ -13,7 +13,7 @@ class FindAddressUseCase(val repository: CronosService) {
     fun invoke(id: String): Flow<Resource<List<Address>>> = flow {
         try {
             emit(Resource.Loading())
-            val data = repository.findAddress(
+            val data = repository.getAddress(
                 AddressRequest(id = id)
             )
             emit(Resource.Success(data))

@@ -3,6 +3,7 @@ package com.cronos.login
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -111,8 +112,8 @@ class LoginViewModel @Inject constructor(
 data class LoginScreenState(
     val isLoading: Boolean = false,
     val error: Resource.Error<Unit>? = null,
-    val username: String = "test99",
-    val password: String = "test2222",
+    val username: String = "",
+    val password: String = "",
     val register: Boolean = false,
 )
 

@@ -24,18 +24,23 @@ interface CronosApi {
         @Query("inn") inn: String,
     ): Response<List<PeopleDto>>
 
-    @GET("/api/passport/find")
-    suspend fun findPassport(
+    @GET("/api/people/get")
+    suspend fun getPeople(
+        @Query("id") bsonId: String
+    ): Response<PeopleDto>
+
+    @GET("/api/passport/get")
+    suspend fun getPassport(
         @Query("id") id: String
     ): Response<List<PassportDto>>
 
-    @GET("/api/address/find")
-    suspend fun findAddress(
+    @GET("/api/address/get")
+    suspend fun getAddress(
         @Query("id") id: String
     ): Response<List<AddressDto>>
 
-    @GET("/api/anketa/find")
-    suspend fun findAnketa(
+    @GET("/api/anketa/get")
+    suspend fun getAnketa(
         @Query("id") id: String
     ): Response<List<AnketaDto>>
 }

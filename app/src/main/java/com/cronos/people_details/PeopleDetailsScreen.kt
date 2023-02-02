@@ -19,16 +19,17 @@ fun PeopleDetailsScreen(people: People) {
     val peopleDetailsScreenState = vm.peopleDetailsScreenState
 
     LaunchedEffect(true) {
+        vm.findPeople(people.bsonId)
         vm.findPassport(people.peopleId)
         vm.findAddress(people.peopleId)
         vm.findAnketa(people.peopleId)
     }
 
-    PeopleDetailsScreenContent(people, peopleDetailsScreenState)
+    PeopleDetailsScreenContent(peopleDetailsScreenState)
 }
 
 @Composable
-fun PeopleDetailsScreenContent(people: People, peopleDetailsScreenState: PeopleDetailsScreenState) {
+fun PeopleDetailsScreenContent(peopleDetailsScreenState: PeopleDetailsScreenState) {
     Surface {
         Column(
             modifier = Modifier
@@ -37,12 +38,12 @@ fun PeopleDetailsScreenContent(people: People, peopleDetailsScreenState: PeopleD
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                Text("${people.surname} ${people.name} ${people.middleName}", modifier = Modifier.weight(0.8f))
+                Text("${peopleDetailsScreenState.people.surname} ${peopleDetailsScreenState.people.name} ${peopleDetailsScreenState.people.middleName}", modifier = Modifier.weight(0.8f))
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(people.dateOfBirthday)
+                Text(peopleDetailsScreenState.people.dateOfBirthday)
             }
 
-            Text(text = "Phones:\n" + people.phoneList.plus(people.phone).toSet().joinToString())
+            Text(text = "Phones:\n" + peopleDetailsScreenState.people.phoneList.plus(peopleDetailsScreenState.people.phone).toSet().joinToString())
 
             peopleDetailsScreenState.listOfAddress.forEach {
                 Column {
@@ -80,22 +81,6 @@ fun PeopleDetailsScreenContent(people: People, peopleDetailsScreenState: PeopleD
 @Composable
 fun PreviewPeopleDetailsScreen() {
     CronosTheme {
-        PeopleDetailsScreenContent(people = People(
-            id = "",
-            peopleId = "",
-            phone = "",
-            name = "",
-            surname = "",
-            middleName = "",
-            dateOfBirthday = "",
-            key = "",
-            inn = "",
-            phoneList = listOf(),
-        ), peopleDetailsScreenState = PeopleDetailsScreenState(
-            listOfPassport = listOf(),
-            listOfAddress = listOf(),
-            listOfAnketa = listOf(),
-        )
-        )
+        PeopleDetailsScreenContent(PeopleDetailsScreenState())
     }
 }

@@ -23,7 +23,7 @@ class SearchResultViewModel @Inject constructor(
     var state by mutableStateOf(ScreenState())
 
     fun findPeople() {
-        val startId = list.lastOrNull()?.id ?: ""
+        val startId = list.lastOrNull()?.bsonId ?: ""
         val peopleId = list.lastOrNull()?.peopleId ?: ""
 
         viewModelScope.launch {

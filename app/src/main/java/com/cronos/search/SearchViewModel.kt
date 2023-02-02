@@ -27,7 +27,7 @@ class SearchViewModel @Inject constructor(
         this.name = name
     }
 
-    var surname by mutableStateOf("Мигалатюк")
+    var surname by mutableStateOf("")
         private set
 
     fun setPeopleSurname(surname: String) {

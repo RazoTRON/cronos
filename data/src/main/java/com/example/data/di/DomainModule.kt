@@ -20,6 +20,10 @@ class DomainModule {
         return FindPeoplesUseCase(repository)
     }
     @Provides
+    fun provideGetPeopleUseCase(repository: CronosService): GetPeopleUseCase {
+        return GetPeopleUseCase(repository)
+    }
+    @Provides
     fun provideFindPassportUseCase(repository: CronosService): FindPassportUseCase {
         return FindPassportUseCase(repository)
     }

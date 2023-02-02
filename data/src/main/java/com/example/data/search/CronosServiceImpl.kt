@@ -32,8 +32,17 @@ class CronosServiceImpl(val api: CronosApi) : CronosService {
         }
     }
 
-    override suspend fun findPassport(request: PassportRequest): List<Passport> {
-        val response = api.findPassport(request.id)
+    override suspend fun getPeople(request: GetPeopleRequest): People {
+        val response = api.getPeople(request.bsonId)
+        if (response.isSuccessful && response.body() != null) {
+            return response.body()!!.toPeople()
+        } else {
+            throw HttpException(response)
+        }
+    }
+
+    override suspend fun getPassport(request: PassportRequest): List<Passport> {
+        val response = api.getPassport(request.id)
         if (response.isSuccessful && response.body() != null) {
             return response.body()!!.map { it.toPassport() }
         } else {
@@ -41,8 +50,8 @@ class CronosServiceImpl(val api: CronosApi) : CronosService {
         }
     }
 
-    override suspend fun findAddress(request: AddressRequest): List<Address> {
-        val response = api.findAddress(request.id)
+    override suspend fun getAddress(request: AddressRequest): List<Address> {
+        val response = api.getAddress(request.id)
         if (response.isSuccessful && response.body() != null) {
             return response.body()!!.map { it.toAddress() }
         } else {
@@ -50,8 +59,8 @@ class CronosServiceImpl(val api: CronosApi) : CronosService {
         }
     }
 
-    override suspend fun findAnketa(request: AnketaRequest): List<Anketa> {
-        val response = api.findAnketa(request.id)
+    override suspend fun getAnketa(request: AnketaRequest): List<Anketa> {
+        val response = api.getAnketa(request.id)
         if (response.isSuccessful && response.body() != null) {
             return response.body()!!.map { it.toAnketa() }
         } else {

@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cronos.ui.theme.CronosTheme
 import com.example.domain.search.model.People
-import com.example.domain.search.model.Phone
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -52,7 +51,7 @@ fun Preview() {
     CronosTheme {
         ResultCard(
             people = People(
-                id = "",
+                bsonId = "",
                 peopleId = "",
                 phone = "380950559022",
                 name = "Vladislav",
