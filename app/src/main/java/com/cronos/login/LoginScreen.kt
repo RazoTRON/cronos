@@ -1,8 +1,7 @@
 package com.cronos.login
 
-import android.provider.Settings
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,12 +13,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,7 +41,6 @@ fun LoginScreen(navController: NavHostController, vm: LoginViewModel = hiltViewM
                 }
             }
         }
-
     }
 
     LoginScreenContent(
@@ -59,8 +54,7 @@ fun LoginScreen(navController: NavHostController, vm: LoginViewModel = hiltViewM
                 context,
                 vm.screenState.error?.message ?: "Unknown error",
                 Toast.LENGTH_LONG
-            )
-                .show()
+            ).show()
         }
     }
 
@@ -73,7 +67,7 @@ fun LoginScreenContent(
 ) {
     val scrollState = rememberScrollState()
 
-    val showPassword by remember { mutableStateOf(false) }
+    var showPassword by remember { mutableStateOf(false) }
 
     Surface {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -98,7 +92,21 @@ fun LoginScreenContent(
                     placeholder = "Password",
                     onValueChange = { events(UiEvent.PasswordChanged(it)) },
                     visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = { if (showPassword) Icon(Icons.Default.Visibility, null) else Icon(Icons.Default.VisibilityOff, null)}
+                    trailingIcon = {
+                        if (showPassword) Icon(
+                            Icons.Default.Visibility,
+                            null,
+                            modifier = Modifier.clickable {
+                                showPassword = false
+                            }
+                        ) else Icon(
+                            Icons.Default.VisibilityOff,
+                            null,
+                            modifier = Modifier.clickable {
+                                showPassword = true
+                            }
+                        )
+                    }
                 )
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {

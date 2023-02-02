@@ -3,7 +3,6 @@ package com.cronos.login
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +12,6 @@ import com.example.domain.auth.use_case.AuthenticateUseCase
 import com.example.domain.auth.use_case.SignInUseCase
 import com.example.domain.auth.use_case.SignUpUseCase
 import com.example.domain.common.Resource
-import com.example.domain.search.CronosService
 import com.example.domain.auth.use_case.GetStatusUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -106,6 +104,9 @@ class LoginViewModel @Inject constructor(
             is UiEvent.PasswordChanged -> { setPasswordField(uiEvent.value) }
         }
     }
+
+
+
 
 }
 
