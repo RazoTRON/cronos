@@ -18,7 +18,7 @@
 | 🌐 Server framework        | [Ktor 2.0](https://github.com/ktorio/ktor)                                        |
 | 💾 Database         | [MongoDB](https://www.mongodb.com/)                                                  |
 | 📄 DB toolkit     | [KMongo](https://litote.org/kmongo/)                                                  |
-| 💉 Server DI      | [Koin 3.0](https://github.com/InsertKoinIO/koin)                                  |  
+| 💉 Server DI      | [Koin](https://github.com/InsertKoinIO/koin)                                  |  
 | 🛣️ Auth          | [JWT](https://jwt.io/)                                                            |
 | 🌊 Async          | [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)                |
 | 🗄️ Web server     | [Nginx](https://github.com/InsertKoinIO/koin)                                      | 
